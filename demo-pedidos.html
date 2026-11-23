@@ -872,7 +872,7 @@
 
   <script>
     // CONFIGURA TU NÚMERO DE WHATSAPP AQUÍ (521 + 10 dígitos)
-    const TU_WHATSAPP = "5212710000000";
+    const TU_WHATSAPP = "522711700530";
     const LOGO_PLATE_FEE = 500; // Cargo único por fabricación de placa/cliché vectorial
 
     document.getElementById("dtrQuoteLink").href =
@@ -1364,8 +1364,9 @@
         doc.setFont("helvetica", "bold");
         doc.text("Destino:", 14, y);
         doc.setFont("helvetica", "normal");
-        doc.text(address, 34, y);
-        y += 7;
+        const addrLines = doc.splitTextToSize(address, 160);
+        doc.text(addrLines, 34, y);
+        y += addrLines.length * 5 + 2;
       }
 
       if (requiresInvoice) {
@@ -1374,11 +1375,12 @@
         doc.setFont("helvetica", "bold");
         doc.text("Facturación:", 14, y);
         doc.setFont("helvetica", "normal");
-        doc.text(`RFC: ${rfc} | Razón Social: ${razon}`, 38, y);
-        y += 8;
+        const fiscalLines = doc.splitTextToSize(`RFC: ${rfc} | Razón Social: ${razon}`, 155);
+        doc.text(fiscalLines, 38, y);
+        y += fiscalLines.length * 5 + 3;
       }
 
-      // Tabla de partidas
+      // Encabezado de tabla de partidas
       y += 4;
       doc.setFillColor(242, 239, 233);
       doc.rect(14, y - 5, 182, 8, "F");
@@ -1386,31 +1388,76 @@
       doc.setFontSize(9.5);
       doc.text("Cant.", 16, y);
       doc.text("Especificación del Producto", 34, y);
-      doc.text("Unitario", 150, y, { align: "right" });
+      doc.text("Unitario", 155, y, { align: "right" });
       doc.text("Total", 192, y, { align: "right" });
 
-      y += 8;
+      y += 9;
+
+      // Renderizado con ajuste automático de ancho (maxWidth = 102mm) y altura dinámica
       cart.forEach(item => {
-        doc.setFont("helvetica", "bold");
-        doc.text(`${item.qty} pzas`, 16, y);
-        doc.text(`${item.name} (${item.size})`, 34, y);
-        doc.setFont("helvetica", "normal");
-        doc.text(`$${item.unitPrice}`, 150, y, { align: "right" });
-        doc.text(`$${item.totalPrice.toLocaleString("es-MX")}`, 192, y, { align: "right" });
-        y += 5;
-        doc.setFontSize(8.5);
-        doc.setTextColor(87, 83, 78);
+        const titleText = `${item.name} — ${item.size}`;
         const logoNote = item.hasLogo ? ` | Grabado Logo (+$${item.plateCharge}): ${item.fileName}` : "";
-        doc.text(`${item.finish} • Tarifa ${item.tierName}${logoNote}`, 34, y);
+        const subText = `${item.finish} • Tarifa ${item.tierName}${logoNote}`;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.5);
+        const titleLines = doc.splitTextToSize(titleText, 102);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        const subLines = doc.splitTextToSize(subText, 102);
+
+        const rowHeight = (titleLines.length * 4.5) + (subLines.length * 4) + 5;
+
+        // Salto de página automático si la partida no cabe
+        if (y + rowHeight > 268) {
+          doc.addPage();
+          y = 20;
+        }
+
+        // Cantidad
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(9.5);
         doc.setTextColor(28, 25, 23);
-        y += 8;
+        doc.text(`${item.qty} ${item.qty === 1 ? "pza" : "pzas"}`, 16, y);
+
+        // Título envuelto en máximo 102mm (termina en x=136, lejos de x=155)
+        doc.text(titleLines, 34, y);
+
+        // Precios alineados a la derecha
+        doc.setFont("helvetica", "normal");
+        doc.text(`$${item.unitPrice}`, 155, y, { align: "right" });
+        doc.setFont("helvetica", "bold");
+        doc.text(`$${item.totalPrice.toLocaleString("es-MX")}`, 192, y, { align: "right" });
+
+        // Sublínea de acabado y archivo vectorial
+        const subY = y + (titleLines.length * 4.5) + 0.5;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8.5);
+        doc.setTextColor(87, 83, 78);
+        doc.text(subLines, 34, subY);
+
+        y += rowHeight;
+
+        // Línea divisoria sutil entre partidas
+        doc.setDrawColor(231, 229, 228);
+        doc.line(14, y - 2.5, 196, y - 2.5);
       });
 
+      // Verificar espacio antes del bloque de totales y banco
+      if (y > 220) {
+        doc.addPage();
+        y = 20;
+      }
+
       // Resumen financiero
-      y += 3;
+      y += 4;
+      doc.setDrawColor(28, 25, 23);
       doc.line(115, y, 196, y);
       y += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      doc.setTextColor(28, 25, 23);
       doc.text("Subtotal:", 120, y);
       doc.text(`$${subtotal.toLocaleString("es-MX")} MXN`, 192, y, { align: "right" });
 
@@ -1465,19 +1512,6 @@
       } catch (e) {}
 
       doc.save(`${folio}_AtelierKraft.pdf`);
-    });
-
-    document.getElementById("btnReDownloadPdf").addEventListener("click", () => {
-      try {
-        const saved = JSON.parse(localStorage.getItem("dtr_ultimo_pdf"));
-        if (!saved) return;
-        const a = document.createElement("a");
-        a.href = saved.data;
-        a.download = saved.filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } catch (e) {}
     });
 
     // ================= ENVÍO A WHATSAPP =================
