@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forja DTR | Ingeniería Web, Sistemas a Medida y Plataformas Digitales</title>
+  <meta name="description" content="Forjamos plataformas web sólidas, rápidas y hechas a la medida de tu negocio con dedicación, honestidad y compromiso." />
+  
+  <!-- Favicon SVG embebido de Forja DTR -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2327292E'/%3E%3Cpath d='M14 20h36l-6 10H20z' fill='%23FFFFFF'/%3E%3Cpath d='M22 33h20l4 13H18z' fill='%23F97316'/%3E%3C/svg%3E" />
+
+  <!-- Tipografías Google Fonts: Plus Jakarta Sans + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-white: #FFFFFF;
+      --bg-smoke: #F4F4F6;
+      --oxford: #27292E;
+      --carbon: #111215;
+      --forge-orange: #F97316;
+      --forge-orange-hover: #EA580C;
+      --steel-gray: #52525B;
+      --border-light: #E4E4E7;
+      --border-dark: #383B42;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --transition: all 0.25s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--carbon);
+      background-color: var(--bg-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ================= BOTONES ================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 24px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .btn-primary {
+      background-color: var(--forge-orange);
+      color: var(--bg-white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--forge-orange-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.28);
+    }
+
+    .btn-outline-light {
+      background-color: transparent;
+      color: var(--bg-white);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline-light:hover {
+      border-color: var(--bg-white);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-outline-dark {
+      background-color: transparent;
+      color: var(--carbon);
+      border-color: var(--border-light);
+      width: 100%;
+    }
+
+    .btn-outline-dark:hover {
+      border-color: var(--forge-orange);
+      color: var(--forge-orange);
+      background-color: rgba(249, 115, 22, 0.04);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* ================= HEADER & NAVBAR ================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: rgba(17, 18, 21, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--bg-white);
+      letter-spacing: 0.02em;
+    }
+
+    .brand-badge {
+      background-color: var(--forge-orange);
+      color: var(--bg-white);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.06em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #D4D4D8;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--forge-orange);
+    }
+
+    .nav-cta {
+      padding: 10px 18px;
+      font-size: 0.88rem;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--bg-white);
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    /* ================= HERO SECTION ================= */
+    .hero {
+      background: linear-gradient(145deg, var(--carbon) 0%, var(--oxford) 100%);
+      color: var(--bg-white);
+      padding: 96px 0 88px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 780px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: rgba(249, 115, 22, 0.14);
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      color: #FDBA74;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero-pill span.dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--forge-orange);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.35rem);
+      font-weight: 800;
+      margin-bottom: 22px;
+      color: var(--bg-white);
+    }
+
+    .hero h1 span {
+      color: var(--forge-orange);
+    }
+
+    .hero p {
+      font-size: 1.12rem;
+      color: #D4D4D8;
+      margin-bottom: 36px;
+      max-width: 650px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .metric-item strong {
+      display: block;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      color: var(--bg-white);
+      margin-bottom: 4px;
+    }
+
+    .metric-item span {
+      font-size: 0.88rem;
+      color: #A1A1AA;
+    }
+
+    /* ================= SECCIONES GENERALES ================= */
+    section {
+      padding: 84px 0;
+    }
+
+    .section-smoke {
+      background-color: var(--bg-smoke);
+    }
+
+    .section-dark {
+      background-color: var(--oxford);
+      color: var(--bg-white);
+    }
+
+    .section-header {
+      max-width: 680px;
+      margin-bottom: 52px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--forge-orange);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .section-header p {
+      color: var(--steel-gray);
+      font-size: 1.03rem;
+    }
+
+    .section-dark .section-header p {
+      color: #D4D4D8;
+    }
+
+    /* ================= PILARES / VALORES ================= */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .card {
+      background-color: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(17, 18, 21, 0.06);
+      border-color: #D4D4D8;
+    }
+
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background-color: rgba(249, 115, 22, 0.12);
+      color: var(--forge-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .card h3 {
+      font-size: 1.22rem;
+      margin-bottom: 12px;
+      color: var(--carbon);
+    }
+
+    .card p {
+      color: var(--steel-gray);
+      font-size: 0.95rem;
+    }
+
+    /* ================= DEMOS EN VIVO ================= */
+    .demo-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(17, 18, 21, 0.07);
+    }
+
+    .demo-top {
+      background-color: var(--oxford);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--forge-orange);
+    }
+
+    .demo-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .demo-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #52525B;
+    }
+
+    .demo-dots span:first-child {
+      background-color: var(--forge-orange);
+    }
+
+    .demo-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #E4E4D7;
+    }
+
+    .demo-body {
+      padding: 28px 24px 24px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .demo-body h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--carbon);
+    }
+
+    .demo-body p {
+      font-size: 0.93rem;
+      color: var(--steel-gray);
+      margin-bottom: 18px;
+    }
+
+    .demo-ideal {
+      font-size: 0.82rem;
+      background-color: var(--bg-smoke);
+      color: var(--oxford);
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 22px;
+      font-weight: 500;
+    }
+
+    /* ================= PAQUETES / SOLUCIONES ================= */
+    .pricing-card {
+      background-color: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 34px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .pricing-card.featured {
+      border: 2px solid var(--forge-orange);
+      box-shadow: 0 18px 36px rgba(17, 18, 21, 0.08);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -13px;
+      right: 24px;
+      background-color: var(--forge-orange);
+      color: var(--bg-white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.3rem;
+      color: var(--carbon);
+      margin-bottom: 8px;
+    }
+
+    .pricing-subtitle {
+      font-size: 0.9rem;
+      color: var(--steel-gray);
+      margin-bottom: 24px;
+      min-height: 44px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--oxford);
+    }
+
+    .check-icon {
+      color: var(--forge-orange);
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ================= PROCESO (4 PASOS) ================= */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .step-card {
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+
+    .step-num {
+      display: inline-block;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--forge-orange);
+      margin-bottom: 14px;
+    }
+
+    .step-card h3 {
+      font-size: 1.1rem;
+      color: var(--bg-white);
+      margin-bottom: 10px;
+    }
+
+    .step-card p {
+      font-size: 0.9rem;
+      color: #D4D4D8;
+    }
+
+    /* ================= CTA BANNER ================= */
+    .cta-box {
+      background: linear-gradient(135deg, var(--carbon) 0%, var(--oxford) 100%);
+      border-radius: 20px;
+      padding: 56px 40px;
+      text-align: center;
+      color: var(--bg-white);
+      border: 1px solid var(--border-dark);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(1.75rem, 3.2vw, 2.4rem);
+      margin-bottom: 16px;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-box p {
+      color: #D4D4D8;
+      font-size: 1.05rem;
+      max-width: 580px;
+      margin: 0 auto 32px;
+    }
+
+    /* ================= FOOTER ================= */
+    footer {
+      background-color: var(--carbon);
+      color: #A1A1AA;
+      padding: 56px 0 36px;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 32px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .footer-brand p {
+      margin-top: 14px;
+      max-width: 380px;
+      font-size: 0.92rem;
+      color: #D4D4D8;
+    }
+
+    .footer-location {
+      font-size: 0.9rem;
+      color: #A1A1AA;
+    }
+
+    .footer-location strong {
+      display: block;
+      color: var(--bg-white);
+      margin-bottom: 6px;
+    }
+
+    .footer-bottom {
+      padding-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+
+    .footer-motto {
+      color: #D4D4D8;
+      font-style: italic;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 960px) {
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-desktop-cta {
+        display: none;
+      }
+      .mobile-toggle {
+        display: block;
+      }
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 74px;
+        left: 0;
+        right: 0;
+        background-color: var(--carbon);
+        padding: 24px;
+        border-bottom: 1px solid var(--border-dark);
+        gap: 18px;
+      }
+      .grid-3, .grid-4, .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+      .hero {
+        padding: 68px 0 64px;
+      }
+      .cta-box {
+        padding: 40px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo" aria-label="Inicio Forja DTR">
+        <!-- Logotipo SVG Forja DTR (Yunque geométrico + Chispa Naranja) -->
+        <svg width="38" height="38" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="64" height="64" rx="14" fill="#27292E"/>
+          <!-- Bloque superior estilo yunque / piedra angular -->
+          <path d="M12 19H52L45 30H19L12 19Z" fill="#FFFFFF"/>
+          <!-- Destello / chispa diagonal en naranja forja -->
+          <path d="M22 34H42L47 47H17L22 34Z" fill="#F97316"/>
+        </svg>
+        <span class="brand-text">FORJA <span class="brand-badge">DTR</span></span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#compromiso">Nuestro Compromiso</a></li>
+        <li><a href="#demos">Demos en Vivo</a></li>
+        <li><a href="#soluciones">Soluciones</a></li>
+        <li><a href="#proceso">Proceso</a></li>
+      </ul>
+
+      <a href="#contacto" class="btn btn-primary nav-cta nav-desktop-cta" data-wa="Hola Rodrigo, me gustaría cotizar una plataforma web con Forja DTR.">
+        Cotizar por WhatsApp
+      </a>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir menú">
+        <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-pill">
+          <span class="dot"></span>
+          INGENIERÍA WEB • HONESTIDAD Y COMPROMISO
+        </div>
+        <h1>Forjamos plataformas web <span>sólidas, rápidas</span> y hechas a la medida de tu negocio.</h1>
+        <p>
+          Transformamos tus ventas, menús y procesos operativos en sistemas digitales ordenados, sin costos ocultos ni mensualidades forzadas. Desarrollado con dedicación y excelencia en cada detalle.
+        </p>
+        <div class="hero-actions">
+          <a href="#demos" class="btn btn-primary">Probar Demos Interactivas</a>
+          <a href="#soluciones" class="btn btn-outline-light">Ver Paquetes y Soluciones</a>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <strong>100% Adaptable a Celular</strong>
+            <span>Interfaces rápidas pensadas para tus clientes móviles.</span>
+          </div>
+          <div class="metric-item">
+            <strong>Sin Rentas de Hosting</strong>
+            <span>Infraestructura moderna en la nube incluida desde el día uno.</span>
+          </div>
+          <div class="metric-item">
+            <strong>Trato Directo y Transparente</strong>
+            <span>Alcances claros por escrito y entregas puntuales.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= NUESTRO COMPROMISO ================= -->
+  <section id="compromiso">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Por qué trabajar con Forja DTR</span>
+        <h2>Tecnología con carácter, transparencia y palabra cumplida.</h2>
+        <p>
+          En <strong>Forja DTR</strong> creemos que el buen software no se improvisa: se planea con orden, se construye con honestidad y se entrega en tiempo y forma.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="icon-box">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+            </svg>
+          </div>
+          <h3>Dedicación en cada detalle</h3>
+          <p>
+            No usamos plantillas genéricas llenas de fallos. Diseñamos interfaces rápidas, limpias y fáciles de operar desde cualquier teléfono para que tus clientes compren sin fricción.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon-box">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3>Honestidad y precios claros</h3>
+          <p>
+            Sabes exactamente qué incluye tu plataforma, cuánto cuesta y cuándo se entrega desde el primer día. Sin letras chiquitas ni cobros sorpresa a mitad del proyecto.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="icon-box">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3>Infraestructura ligera y veloz</h3>
+          <p>
+            Desplegamos tu plataforma en servidores modernos de alta disponibilidad sin obligarte a pagar rentas mensuales costosas por alojamiento básico.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DEMOS EN VIVO ================= -->
+  <section id="demos" class="section-smoke">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Portafolio Interactivo</span>
+        <h2>Prueba nuestras plataformas en acción</h2>
+        <p>
+          Explora cómo funcionan nuestros sistemas directamente desde tu teléfono antes de tomar una decisión.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Demo 1 -->
+        <article class="demo-card">
+          <div>
+            <div class="demo-top">
+              <div class="demo-dots"><span></span><span></span><span></span></div>
+              <span class="demo-label">Pedidos + PDF</span>
+            </div>
+            <div class="demo-body">
+              <div>
+                <h3>Configurador de Pedidos Pro</h3>
+                <p>
+                  Catálogo interactivo con carrito persistente, cálculo automático por volumen/mayoreo, generación de comprobante en PDF y envío directo a WhatsApp.
+                </p>
+              </div>
+              <div>
+                <div class="demo-ideal">Ideal para: Repostería, imprentas, talleres y comercios.</div>
+                <!-- Reemplaza el href con tu link real de Vercel cuando subas la demo -->
+                <a href="#contacto" class="btn btn-outline-dark" data-wa="Hola Rodrigo, me gustaría ver en vivo la Demo del Configurador de Pedidos Pro.">
+                  Solicitar Enlace de Demo →
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Demo 2 -->
+        <article class="demo-card">
+          <div>
+            <div class="demo-top">
+              <div class="demo-dots"><span></span><span></span><span></span></div>
+              <span class="demo-label">Gastronomía</span>
+            </div>
+            <div class="demo-body">
+              <div>
+                <h3>Menú Digital Express</h3>
+                <p>
+                  Carta interactiva ultrarrápida con categorías, búsqueda instantánea, selección de extras y recepción de pedidos organizados en tu WhatsApp.
+                </p>
+              </div>
+              <div>
+                <div class="demo-ideal">Ideal para: Cafeterías, restaurantes y cocinas económicas.</div>
+                <a href="#contacto" class="btn btn-outline-dark" data-wa="Hola Rodrigo, me gustaría ver en vivo la Demo del Menú Digital Express.">
+                  Solicitar Enlace de Demo →
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Demo 3 -->
+        <article class="demo-card">
+          <div>
+            <div class="demo-top">
+              <div class="demo-dots"><span></span><span></span><span></span></div>
+              <span class="demo-label">Comunidad & Música</span>
+            </div>
+            <div class="demo-body">
+              <div>
+                <h3>Plataforma Comunitaria y Musical</h3>
+                <p>
+                  Sistemas interactivos a medida con paneles administrativos seguros, muros de participación en tiempo real y herramientas para repertorio musical en vivo.
+                </p>
+              </div>
+              <div>
+                <div class="demo-ideal">Ideal para: Congregaciones, bandas musicales y organizaciones.</div>
+                <a href="#contacto" class="btn btn-outline-dark" data-wa="Hola Rodrigo, me gustaría ver en vivo la Demo de Plataforma Comunitaria / Musical.">
+                  Solicitar Enlace de Demo →
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PAQUETES DE DESARROLLO ================= -->
+  <section id="soluciones">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Soluciones a la Medida</span>
+        <h2>Elige la herramienta que tu negocio necesita hoy</h2>
+        <p>
+          Todos nuestros desarrollos incluyen diseño personalizado con tu marca, optimización móvil y despliegue gratuito en la nube.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Paquete 1 -->
+        <div class="pricing-card">
+          <div>
+            <h3>Impulso Express</h3>
+            <p class="pricing-subtitle">Para negocios que quieren dejar de perder pedidos en chats desordenados.</p>
+            <ul class="feature-list">
+              <li><span class="check-icon">✓</span> Diseño personalizado con tus colores y logotipo</li>
+              <li><span class="check-icon">✓</span> Catálogo o menú digital con fotos y precios</li>
+              <li><span class="check-icon">✓</span> Carrito con envío estructurado a tu WhatsApp</li>
+              <li><span class="check-icon">✓</span> Optimizado 100% para celulares</li>
+              <li><span class="check-icon">✓</span> Alojamiento rápido en la nube sin renta mensual</li>
+            </ul>
+          </div>
+          <a href="#contacto" class="btn btn-outline-dark" data-wa="Hola Rodrigo, me interesa cotizar el paquete Impulso Express (Catálogo / Menú Digital).">
+            Cotizar Impulso Express
+          </a>
+        </div>
+
+        <!-- Paquete 2 (Destacado) -->
+        <div class="pricing-card featured">
+          <span class="featured-badge">Más Solicitado</span>
+          <div>
+            <h3>Sistema a Medida</h3>
+            <p class="pricing-subtitle">Para comercios con reglas específicas, mayoreo o gestión interna.</p>
+            <ul class="feature-list">
+              <li><span class="check-icon">✓</span> Todo lo incluido en Impulso Express</li>
+              <li><span class="check-icon">✓</span> Reglas personalizadas (precios por mayoreo o envíos)</li>
+              <li><span class="check-icon">✓</span> Generación automática de recibos en PDF</li>
+              <li><span class="check-icon">✓</span> Panel administrativo privado para gestionar productos</li>
+              <li><span class="check-icon">✓</span> Capacitación práctica para operar tu sistema</li>
+            </ul>
+          </div>
+          <a href="#contacto" class="btn btn-primary btn-full" data-wa="Hola Rodrigo, me interesa cotizar el paquete Sistema a Medida (Pedidos Pro + Panel Admin).">
+            Cotizar Sistema a Medida
+          </a>
+        </div>
+
+        <!-- Paquete 3 -->
+        <div class="pricing-card">
+          <div>
+            <h3>Desarrollo Especial</h3>
+            <p class="pricing-subtitle">Plataformas interactivas para comunidades, música o flujos operativos únicos.</p>
+            <ul class="feature-list">
+              <li><span class="check-icon">✓</span> Arquitectura diseñada desde cero según tu proyecto</li>
+              <li><span class="check-icon">✓</span> Base de datos en tiempo real y autenticación</li>
+              <li><span class="check-icon">✓</span> Herramientas interactivas especializadas</li>
+              <li><span class="check-icon">✓</span> Panel de control y moderación a medida</li>
+              <li><span class="check-icon">✓</span> Soporte técnico directo durante el lanzamiento</li>
+            </ul>
+          </div>
+          <a href="#contacto" class="btn btn-outline-dark" data-wa="Hola Rodrigo, tengo un proyecto especial y me gustaría platicar contigo.">
+            Platicar mi Proyecto
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESO DE TRABAJO ================= -->
+  <section id="proceso" class="section-dark">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Metodología Clara</span>
+        <h2>Así forjamos tu plataforma en 4 pasos</h2>
+        <p>
+          Un proceso ordenado para que tengas visibilidad total de tu inversión desde el primer día.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="step-card">
+          <span class="step-num">01</span>
+          <h3>Diagnóstico sin costo</h3>
+          <p>Platicamos sobre tu negocio, tus objetivos y definimos exactamente qué necesita tu plataforma.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">02</span>
+          <h3>Propuesta clara</h3>
+          <p>Te entregamos el alcance por escrito, tiempos reales y presupuesto transparente (50% de anticipo para iniciar).</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">03</span>
+          <h3>Forja y pruebas</h3>
+          <p>Construimos tu sistema y te compartimos enlaces de avance para que lo pruebes en tu propio celular.</p>
+        </div>
+
+        <div class="step-card">
+          <span class="step-num">04</span>
+          <h3>Entrega y capacitación</h3>
+          <p>Publicamos tu plataforma, te enseñamos a administrarla y liquidas el 50% restante contra entrega.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA FINAL ================= -->
+  <section id="contacto">
+    <div class="container">
+      <div class="cta-box">
+        <h2>¿Listo para darle orden y presencia profesional a tu proyecto?</h2>
+        <p>
+          Escríbenos hoy mismo. Platícanos tu idea y te asesoramos con total honestidad sobre la mejor solución para tu etapa actual.
+        </p>
+        <a href="#" class="btn btn-primary" data-wa="Hola Rodrigo, vengo de la página de Forja DTR y me gustaría información para crear mi plataforma web.">
+          Iniciar conversación por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="64" height="64" rx="14" fill="#27292E"/>
+              <path d="M12 19H52L45 30H19L12 19Z" fill="#FFFFFF"/>
+              <path d="M22 34H42L47 47H17L22 34Z" fill="#F97316"/>
+            </svg>
+            <span class="brand-text" style="font-size: 1.15rem;">FORJA <span class="brand-badge">DTR</span></span>
+          </a>
+          <p>
+            Desarrollo de plataformas web, catálogos interactivos y sistemas a la medida construidos con dedicación, honestidad y excelencia.
+          </p>
+        </div>
+
+        <div class="footer-location">
+          <strong>Ubicación y Cobertura</strong>
+          Córdoba y Orizaba, Veracruz, México.<br />
+          Atención remota a proyectos en todo el país.
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Forja DTR. Todos los derechos reservados.</span>
+        <span class="footer-motto">“Encomendamos cada obra a la excelencia.”</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script>
+    // 1. CONFIGURA AQUÍ TU NÚMERO DE WHATSAPP (Código de país 52 + 1 + 10 dígitos)
+    const WHATSAPP_NUMBER = "5212710000000";
+
+    // Año dinámico en el footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Menú móvil
+    const mobileToggle = document.getElementById("mobileToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    mobileToggle.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+
+    navLinks.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.classList.remove("active");
+      });
+    });
+
+    // Configurar todos los botones con atributo data-wa para abrir WhatsApp automáticamente
+    document.querySelectorAll("[data-wa]").forEach(btn => {
+      const message = encodeURIComponent(btn.getAttribute("data-wa"));
+      btn.setAttribute("href", `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`);
+      btn.setAttribute("target", "_blank");
+      btn.setAttribute("rel", "noopener noreferrer");
+    });
+  </script>
+</body>
+</html>
