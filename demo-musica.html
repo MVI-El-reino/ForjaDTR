@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Atril Digital Pro | Cancionero en Vivo — Demo Forja DTR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Tema Escenario Oscuro por defecto (Cero deslumbramiento en tarima) */
+      --bg-app: #111215;
+      --bg-surface: #1B1D22;
+      --bg-elevated: #27292E;
+      --text-main: #F4F4F6;
+      --text-muted: #A1A1AA;
+      --border-color: #32353D;
+      --forge-orange: #F97316;
+      --forge-orange-soft: rgba(249, 115, 22, 0.16);
+      --chord-color: #FB923C;
+      --section-badge-bg: #27292E;
+      --section-badge-text: #FDBA74;
+      --lyric-size: 18px;
+    }
+
+    body.light-mode {
+      --bg-app: #F4F4F6;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #E4E4E7;
+      --text-main: #111215;
+      --text-muted: #52525B;
+      --border-color: #D4D4D8;
+      --forge-orange: #EA580C;
+      --forge-orange-soft: rgba(234, 88, 12, 0.12);
+      --chord-color: #EA580C;
+      --section-badge-bg: #FFF7ED;
+      --section-badge-text: #C2410C;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ================= BARRA SUPERIOR FORJA DTR ================= */
+    .dtr-demo-bar {
+      background-color: #090A0C;
+      color: #FFFFFF;
+      padding: 10px 18px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+      border-bottom: 2px solid #F97316;
+    }
+
+    .dtr-back-link {
+      color: #D4D4D8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .dtr-back-link strong {
+      color: #FFFFFF;
+    }
+
+    .dtr-quote-btn {
+      background-color: #F97316;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 0.78rem;
+    }
+
+    /* ================= LAYOUT PRINCIPAL ================= */
+    .app-shell {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      min-height: calc(100vh - 44px);
+    }
+
+    @media (max-width: 880px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ================= PANEL IZQUIERDO: REPERTORIO Y BUSCADOR ================= */
+    .sidebar {
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    @media (max-width: 880px) {
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .app-brand h1 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background-color: var(--forge-orange);
+      box-shadow: 0 0 10px var(--forge-orange);
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-size: 16px; /* Evita auto-zoom en iOS Safari */
+      outline: none;
+    }
+
+    .search-wrapper svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .f-pill {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-app);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .f-pill.active {
+      background-color: var(--forge-orange);
+      color: #FFFFFF;
+      border-color: var(--forge-orange);
+    }
+
+    .song-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 62vh;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 880px) {
+      .song-list {
+        flex-direction: row;
+        max-height: none;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+    }
+
+    .song-item {
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s;
+      min-width: 215px;
+    }
+
+    .song-item:hover {
+      border-color: var(--forge-orange);
+    }
+
+    .song-item.active {
+      background-color: var(--forge-orange-soft);
+      border-color: var(--forge-orange);
+    }
+
+    .song-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .song-item strong {
+      font-size: 0.94rem;
+      display: block;
+    }
+
+    .key-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background-color: var(--bg-elevated);
+      color: var(--chord-color);
+      padding: 2px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .song-item small {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      display: block;
+    }
+
+    /* ================= PANEL DERECHO: VISOR DE ESCENARIO ================= */
+    .stage-area {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Barra de controles en vivo */
+    .stage-toolbar {
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: sticky;
+      top: 43px;
+      z-index: 900;
+    }
+
+    .control-cluster {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--bg-app);
+      border: 1px solid var(--border-color);
+      padding: 4px 8px;
+      border-radius: 10px;
+    }
+
+    .ctrl-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-right: 2px;
+    }
+
+    .ctrl-btn {
+      background-color: var(--bg-elevated);
+      color: var(--text-main);
+      border: none;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s;
+    }
+
+    .ctrl-btn:hover {
+      background-color: var(--forge-orange);
+      color: #FFFFFF;
+    }
+
+    .ctrl-btn.active-state {
+      background-color: var(--forge-orange);
+      color: #FFFFFF;
+    }
+
+    .key-readout {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--chord-color);
+      min-width: 34px;
+      text-align: center;
+    }
+
+    /* Indicador LED BPM */
+    .bpm-led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      transition: transform 0.08s ease, background-color 0.08s ease;
+    }
+
+    .bpm-led.beat {
+      background-color: var(--forge-orange);
+      transform: scale(1.35);
+      box-shadow: 0 0 10px var(--forge-orange);
+    }
+
+    /* ================= HOJA DE LETRA Y ACORDES ================= */
+    .song-sheet {
+      padding: 28px 24px 110px;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .sheet-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+    }
+
+    .sheet-header h2 {
+      font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+      margin-bottom: 6px;
+    }
+
+    .sheet-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .sheet-meta span strong {
+      color: var(--text-main);
+    }
+
+    /* Saltos rápidos de sección */
+    .section-jumps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .jump-chip {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background-color: var(--section-badge-bg);
+      color: var(--section-badge-text);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+
+    /* Bloques de canción */
+    .song-section-block {
+      margin-bottom: 28px;
+      scroll-margin-top: 120px;
+    }
+
+    .section-title-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background-color: var(--section-badge-bg);
+      color: var(--section-badge-text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .lyric-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 10px;
+      font-size: var(--lyric-size);
+    }
+
+    /* Par sílaba + acorde anclado */
+    .chord-pair {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      vertical-align: bottom;
+      white-space: pre;
+    }
+
+    .chord-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.82em;
+      color: var(--chord-color);
+      line-height: 1.2;
+      min-height: 1.25em;
+      padding-right: 4px;
+      user-select: none;
+    }
+
+    body.hide-chords .chord-label {
+      display: none;
+    }
+
+    body.hide-chords .lyric-line {
+      margin-bottom: 6px;
+    }
+
+    .lyric-text {
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    /* Solo acordes (Intro / Instrumental) */
+    .instrumental-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: calc(var(--lyric-size) * 0.92);
+      color: var(--chord-color);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR DE AGENCIA FORJA DTR -->
+  <div class="dtr-demo-bar">
+    <a href="index.html" class="dtr-back-link">
+      ← Volver a <strong>Forja DTR</strong>
+    </a>
+    <a href="#" id="dtrQuoteLink" class="dtr-quote-btn" target="_blank" rel="noopener noreferrer">
+      Cotizar plataforma así →
+    </a>
+  </div>
+
+  <div class="app-shell">
+    <!-- PANEL IZQUIERDO: REPERTORIO -->
+    <aside class="sidebar">
+      <div class="app-brand">
+        <h1><span class="live-dot"></span> Atril Digital Pro</h1>
+        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">EN VIVO</span>
+      </div>
+
+      <div class="search-wrapper">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" id="songSearch" placeholder="Buscar canción, tono o letra..." />
+      </div>
+
+      <div class="filter-pills" id="categoryPills"></div>
+
+      <div class="song-list" id="songList"></div>
+    </aside>
+
+    <!-- PANEL DERECHO: VISOR DE ESCENARIO -->
+    <main class="stage-area">
+      <div class="stage-toolbar">
+        <!-- Control de Tono / Transporte -->
+        <div class="control-cluster">
+          <span class="ctrl-label">Tono</span>
+          <button type="button" class="ctrl-btn" id="transposeDown" title="Bajar medio tono">−1</button>
+          <span class="key-readout" id="currentKeyDisplay">D</span>
+          <button type="button" class="ctrl-btn" id="transposeUp" title="Subir medio tono">+1</button>
+          <button type="button" class="ctrl-btn" id="transposeReset" title="Tono original" style="font-size:0.75rem;">Orig</button>
+        </div>
+
+        <!-- Control de Zoom de Letra -->
+        <div class="control-cluster">
+          <span class="ctrl-label">Letra</span>
+          <button type="button" class="ctrl-btn" id="zoomOut">A−</button>
+          <span id="zoomReadout" style="font-size:0.8rem; font-weight:700; min-width:38px; text-align:center;">100%</span>
+          <button type="button" class="ctrl-btn" id="zoomIn">A+</button>
+        </div>
+
+        <!-- Metrónomo Visual / Sonoro -->
+        <div class="control-cluster">
+          <span class="bpm-led" id="bpmLed"></span>
+          <span id="bpmDisplay" style="font-family:'JetBrains Mono', monospace; font-size:0.82rem; font-weight:700;">74 BPM</span>
+          <button type="button" class="ctrl-btn" id="toggleClickBtn" title="Activar/Desactivar clic de metrónomo">Clic</button>
+        </div>
+
+        <!-- Modos rápidos -->
+        <div class="control-cluster">
+          <button type="button" class="ctrl-btn" id="toggleChordsBtn">Solo Letra</button>
+          <button type="button" class="ctrl-btn" id="toggleScrollBtn">Auto-Scroll</button>
+          <button type="button" class="ctrl-btn" id="toggleThemeBtn" title="Cambiar modo día/noche">☀ / ☾</button>
+        </div>
+      </div>
+
+      <!-- HOJA ACTIVA -->
+      <article class="song-sheet" id="songSheet"></article>
+    </main>
+  </div>
+
+  <script>
+    // CONFIGURA TU NÚMERO DE WHATSAPP AQUÍ (521 + 10 dígitos)
+    const TU_WHATSAPP = "5212710000000";
+
+    document.getElementById("dtrQuoteLink").href =
+      `https://wa.me/${TU_WHATSAPP}?text=${encodeURIComponent("Hola Rodrigo, probé la demo de Atril Digital Pro (Cancionero en Vivo con transporte de acordes) en Forja DTR y quiero cotizar una plataforma así.")}`;
+
+    // REPERTORIO DE DEMOSTRACIÓN (Formato con acordes anclados por sílaba [Acorde])
+    const SONGS = [
+      {
+        id: 1,
+        title: "Hasta el Fin",
+        artist: "Arreglo Original • Ensamble Acústico",
+        category: "Balada / Adoración",
+        originalKey: "D",
+        bpm: 74,
+        timeSig: "4/4",
+        sections: [
+          {
+            name: "Intro",
+            instrumental: "| D   | G/B   | Bm7   | Asus4  A |"
+          },
+          {
+            name: "Verso 1",
+            lines: [
+              "[D]Cuando el camino pa[A/C#]rece nublarse,",
+              "[Bm7]y faltan fuerzas pa[G]ra continuar,",
+              "[D/F#]recuerdo fiel que Tu [G]mano sostiene",
+              "[Em7]cada promesa que [Asus4]vas a cum[A]plir."
+            ]
+          },
+          {
+            name: "Pre-Coro",
+            lines: [
+              "[Em7]No temeré aunque [D/F#]tiemble la tierra,",
+              "[G]mi confianza puesta es[Asus4]tá en Ti [A]Señor."
+            ]
+          },
+          {
+            name: "Coro",
+            lines: [
+              "[D]Hasta el fin caminaremos en Tu [A/C#]luz,",
+              "[Bm7]firme la roca donde [G]edificamos hoy;",
+              "[D/F#]toda nuestra obra la po[G]nemos en Tus manos,",
+              "[Em7]para Tu gloria [Asus4]hasta el [D]fin."
+            ]
+          },
+          {
+            name: "Puente",
+            lines: [
+              "[G]Encomendamos nues[A]tros pasos a Ti,",
+              "[Bm7]y nuestros planes se a[D/F#]firman en Tu paz,",
+              "[G]nada nos mueve si [Em7]Tú vas delante,",
+              "[Asus4]eres fiel, [A]siempre fiel."
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Roca Inconmovible",
+        artist: "Repertorio Congregacional",
+        category: "Júbilo / Banda",
+        originalKey: "G",
+        bpm: 122,
+        timeSig: "4/4",
+        sections: [
+          {
+            name: "Intro",
+            instrumental: "| G   | C2   | Em7   | Dsus4  D |"
+          },
+          {
+            name: "Verso",
+            lines: [
+              "[G]Levantamos hoy un [C2]canto de gratitud,",
+              "[Em7]por Tu fidelidad que [D]nunca cambiará;",
+              "[G/B]en medio de la prueba [C2]permaneces fiel,",
+              "[Am7]nuestro refugio [Dsus4]y salvación."
+            ]
+          },
+          {
+            name: "Coro",
+            lines: [
+              "[G]Eres la roca inconmo[D/F#]vible,",
+              "[Em7]nuestro fundamento e[C2]terno;",
+              "[G]toda la tierra cante [D]gloria",
+              "[Am7]al que vive [Dsus4]para siem[G]pre."
+            ]
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "En Tu Presencia Hay Paz",
+        artist: "Sesión Íntima • Piano & Cuerdas",
+        category: "Balada / Adoración",
+        originalKey: "C",
+        bpm: 68,
+        timeSig: "6/8",
+        sections: [
+          {
+            name: "Verso 1",
+            lines: [
+              "[C]Silencio el ruido de [G/B]mi alrededor,",
+              "[Am7]vengo a rendirte mi [Fmaj7]corazón;",
+              "[Dm7]aquí encuentro des[C/E]canso real,",
+              "[F]bajo la sombra [Gsus4]de Tu a[G]mor."
+            ]
+          },
+          {
+            name: "Coro",
+            lines: [
+              "[C]En Tu presencia hay [G]paz,",
+              "[Am7]se disipa todo te[F]mor;",
+              "[C/E]Tú renuevas mi in[Dm7]terior",
+              "[F]con Tu gracia [Gsus4]y Tu [C]verdad."
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Luz en la Ciudad",
+        artist: "Arreglo Moderno • Guitarras",
+        category: "Júbilo / Banda",
+        originalKey: "E",
+        bpm: 128,
+        timeSig: "4/4",
+        sections: [
+          {
+            name: "Intro",
+            instrumental: "| E   | A2   | C#m7   | Bsus4  B |"
+          },
+          {
+            name: "Verso",
+            lines: [
+              "[E]No esconderemos la [A2]luz que nos diste,",
+              "[C#m7]brillará fuerte en [B]cada lugar;",
+              "[E/G#]con integridad y [A2]manos dispuestas,",
+              "[F#m7]servimos hoy con [Bsus4]integridad."
+            ]
+          },
+          {
+            name: "Coro",
+            lines: [
+              "[E]Que vean Tus obras y [B/D#]glorifiquen,",
+              "[C#m7]al Padre bueno que [A2]nos llamó;",
+              "[E/G#]somos ciudad so[A2]bre el monte,",
+              "[F#m7]luz que alumbra [Bsus4]sin te[E]mor."
+            ]
+          }
+        ]
+      }
+    ];
+
+    // ================= MOTOR DE TRANSPORTE ARMÓNICO =================
+    const SHARP_SCALE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const FLAT_TO_SHARP = { "Db": "C#", "Eb": "D#", "Gb": "F#", "Ab": "G#", "Bb": "A#" };
+
+    function transposeNote(note, semitones) {
+      const normalized = FLAT_TO_SHARP[note] || note;
+      const idx = SHARP_SCALE.indexOf(normalized);
+      if (idx === -1) return note;
+      const newIdx = (idx + semitones % 12 + 12) % 12;
+      return SHARP_SCALE[newIdx];
+    }
+
+    function transposeChord(chordStr, semitones) {
+      if (semitones === 0) return chordStr;
+      // Soporta acordes compuestos con bajo invertido (ej. D/F#, A/C#)
+      return chordStr.split("/").map(part => {
+        return part.replace(/^([A-G][#b]?)(.*)$/, (_, root, suffix) => {
+          return transposeNote(root, semitones) + suffix;
+        });
+      }).join("/");
+    }
+
+    function transposeInstrumental(line, semitones) {
+      if (semitones === 0) return line;
+      return line.replace(/([A-G][#b]?(?:m|maj|min|sus|dim|aug|add|[0-9])*(?:\/[A-G][#b]?)?)/g, match => {
+        return transposeChord(match, semitones);
+      });
+    }
+
+    // ================= ESTADO DE LA APLICACIÓN =================
+    let activeSongId = SONGS[0].id;
+    let activeCategory = "Todas";
+    let searchTerm = "";
+    let transposeSteps = 0;
+    let fontSizePx = 18;
+    let clickAudioEnabled = false;
+    let audioCtx = null;
+    let bpmInterval = null;
+    let autoScrollInterval = null;
+
+    // Cargar zoom guardado
+    try {
+      const savedZoom = parseInt(localStorage.getItem("dtr_musica_zoom"));
+      if (savedZoom >= 14 && savedZoom <= 28) fontSizePx = savedZoom;
+    } catch (e) {}
+
+    function applyFontSize() {
+      document.documentElement.style.setProperty("--lyric-size", fontSizePx + "px");
+      const pct = Math.round((fontSizePx / 18) * 100);
+      document.getElementById("zoomReadout").textContent = pct + "%";
+      try {
+        localStorage.setItem("dtr_musica_zoom", fontSizePx);
+      } catch (e) {}
+    }
+
+    // ================= RENDER DE LISTA Y CATEGORÍAS =================
+    function renderCategories() {
+      const cats = ["Todas", ...new Set(SONGS.map(s => s.category))];
+      document.getElementById("categoryPills").innerHTML = cats.map(c => `
+        <button type="button" class="f-pill ${c === activeCategory ? 'active' : ''}" onclick="setSongCategory('${c}')">
+          ${c}
+        </button>
+      `).join("");
+    }
+
+    window.setSongCategory = function(cat) {
+      activeCategory = cat;
+      renderCategories();
+      renderSongList();
+    };
+
+    function renderSongList() {
+      const listEl = document.getElementById("songList");
+      const filtered = SONGS.filter(s => {
+        const matchCat = activeCategory === "Todas" || s.category === activeCategory;
+        const fullLyrics = s.sections.map(sec => (sec.lines || []).join(" ")).join(" ").toLowerCase();
+        const matchQuery = s.title.toLowerCase().includes(searchTerm) ||
+                           s.originalKey.toLowerCase().includes(searchTerm) ||
+                           fullLyrics.includes(searchTerm);
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<p style="color: var(--text-muted); font-size:0.85rem; padding:12px;">Sin resultados en el repertorio.</p>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(song => `
+        <button type="button" class="song-item ${song.id === activeSongId ? 'active' : ''}" onclick="selectSong(${song.id})">
+          <div class="song-item-top">
+            <strong>${song.title}</strong>
+            <span class="key-tag">${song.originalKey}</span>
+          </div>
+          <small>${song.bpm} BPM • ${song.timeSig} • ${song.category}</small>
+        </button>
+      `).join("");
+    }
+
+    document.getElementById("songSearch").addEventListener("input", (e) => {
+      searchTerm = e.target.value.toLowerCase().trim();
+      renderSongList();
+    });
+
+    window.selectSong = function(id) {
+      activeSongId = id;
+      transposeSteps = 0;
+      stopAutoScroll();
+      renderSongList();
+      renderActiveSong();
+      startBpmEngine();
+    };
+
+    // ================= PARSER DE SÍLABAS + ACORDES =================
+    function buildChordLyricLine(rawLine, semitones) {
+      // Divide texto con etiquetas [Acorde] en segmentos alineados por sílaba
+      const parts = rawLine.split(/(\[[^\]]+\])/g);
+      let html = `<div class="lyric-line">`;
+      let pendingChord = "";
+
+      for (let i = 0; i < parts.length; i++) {
+        const token = parts[i];
+        if (!token) continue;
+
+        if (token.startsWith("[") && token.endsWith("]")) {
+          const rawChord = token.slice(1, -1);
+          pendingChord = transposeChord(rawChord, semitones);
+        } else {
+          html += `
+            <span class="chord-pair">
+              <span class="chord-label">${pendingChord || " "}</span>
+              <span class="lyric-text">${token}</span>
+            </span>
+          `;
+          pendingChord = "";
+        }
+      }
+
+      // Si quedó un acorde al final de la línea sin texto posterior
+      if (pendingChord) {
+        html += `
+          <span class="chord-pair">
+            <span class="chord-label">${pendingChord}</span>
+            <span class="lyric-text"> </span>
+          </span>
+        `;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    function renderActiveSong() {
+      const song = SONGS.find(s => s.id === activeSongId);
+      const currentKey = transposeChord(song.originalKey, transposeSteps);
+
+      document.getElementById("currentKeyDisplay").textContent = currentKey;
+      document.getElementById("bpmDisplay").textContent = `${song.bpm} BPM`;
+
+      const jumpsHtml = song.sections.map((sec, idx) => `
+        <button type="button" class="jump-chip" onclick="document.getElementById('sec-${idx}').scrollIntoView({behavior:'smooth'})">
+          ${sec.name}
+        </button>
+      `).join("");
+
+      const sectionsHtml = song.sections.map((sec, idx) => {
+        let contentHtml = "";
+        if (sec.instrumental) {
+          contentHtml = `<div class="instrumental-line">${transposeInstrumental(sec.instrumental, transposeSteps)}</div>`;
+        } else if (sec.lines) {
+          contentHtml = sec.lines.map(l => buildChordLyricLine(l, transposeSteps)).join("");
+        }
+
+        return `
+          <section class="song-section-block" id="sec-${idx}">
+            <span class="section-title-tag">${sec.name}</span>
+            ${contentHtml}
+          </section>
+        `;
+      }).join("");
+
+      document.getElementById("songSheet").innerHTML = `
+        <div class="sheet-header">
+          <h2>${song.title}</h2>
+          <div class="sheet-meta">
+            <span><strong>Tono Actual:</strong> ${currentKey} (Orig: ${song.originalKey})</span>
+            <span>• <strong>Tempo:</strong> ${song.bpm} BPM (${song.timeSig})</span>
+            <span>• ${song.artist}</span>
+          </div>
+          <div class="section-jumps">${jumpsHtml}</div>
+        </div>
+        ${sectionsHtml}
+      `;
+    }
+
+    // ================= CONTROLES DE TRANSPORTE, ZOOM Y ESCENARIO =================
+    document.getElementById("transposeUp").addEventListener("click", () => {
+      transposeSteps = (transposeSteps + 1) % 12;
+      renderActiveSong();
+    });
+
+    document.getElementById("transposeDown").addEventListener("click", () => {
+      transposeSteps = (transposeSteps - 1 + 12) % 12;
+      renderActiveSong();
+    });
+
+    document.getElementById("transposeReset").addEventListener("click", () => {
+      transposeSteps = 0;
+      renderActiveSong();
+    });
+
+    document.getElementById("zoomIn").addEventListener("click", () => {
+      if (fontSizePx < 28) {
+        fontSizePx += 2;
+        applyFontSize();
+      }
+    });
+
+    document.getElementById("zoomOut").addEventListener("click", () => {
+      if (fontSizePx > 14) {
+        fontSizePx -= 2;
+        applyFontSize();
+      }
+    });
+
+    // Ocultar / Mostrar acordes (Modo Vocalista)
+    const toggleChordsBtn = document.getElementById("toggleChordsBtn");
+    toggleChordsBtn.addEventListener("click", () => {
+      const hidden = document.body.classList.toggle("hide-chords");
+      toggleChordsBtn.classList.toggle("active-state", hidden);
+      toggleChordsBtn.textContent = hidden ? "Mostrar Acordes" : "Solo Letra";
+    });
+
+    // Modo Día / Noche
+    document.getElementById("toggleThemeBtn").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+
+    // Auto-Scroll suave para manos libres
+    const toggleScrollBtn = document.getElementById("toggleScrollBtn");
+    function stopAutoScroll() {
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+      toggleScrollBtn.classList.remove("active-state");
+      toggleScrollBtn.textContent = "Auto-Scroll";
+    }
+
+    toggleScrollBtn.addEventListener("click", () => {
+      if (autoScrollInterval) {
+        stopAutoScroll();
+      } else {
+        toggleScrollBtn.classList.add("active-state");
+        toggleScrollBtn.textContent = "Pausar Scroll";
+        autoScrollInterval = setInterval(() => {
+          window.scrollBy(0, 1);
+          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 4) {
+            stopAutoScroll();
+          }
+        }, 45);
+      }
+    });
+
+    // ================= METRÓNOMO VISUAL Y SONORO (WEB AUDIO API) =================
+    function playMetronomeClick() {
+      if (!clickAudioEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(980, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.055);
+      } catch (e) {}
+    }
+
+    function startBpmEngine() {
+      if (bpmInterval) clearInterval(bpmInterval);
+      const song = SONGS.find(s => s.id === activeSongId);
+      const msPerBeat = Math.round(60000 / song.bpm);
+      const led = document.getElementById("bpmLed");
+
+      bpmInterval = setInterval(() => {
+        led.classList.add("beat");
+        playMetronomeClick();
+        setTimeout(() => led.classList.remove("beat"), 110);
+      }, msPerBeat);
+    }
+
+    const toggleClickBtn = document.getElementById("toggleClickBtn");
+    toggleClickBtn.addEventListener("click", () => {
+      clickAudioEnabled = !clickAudioEnabled;
+      toggleClickBtn.classList.toggle("active-state", clickAudioEnabled);
+      toggleClickBtn.textContent = clickAudioEnabled ? "Clic ON" : "Clic";
+    });
+
+    // Inicializar
+    applyFontSize();
+    renderCategories();
+    renderSongList();
+    renderActiveSong();
+    startBpmEngine();
+  </script>
+</body>
+</html>
